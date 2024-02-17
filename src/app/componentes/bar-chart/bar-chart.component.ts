@@ -23,9 +23,10 @@ export class BarChartComponent  implements OnInit {
 
     this.servicio.datos$.subscribe((datos) => {
       if (datos != undefined) {
-
+        this.actualizarValoresChart(datos.categoria, datos.totalResults);
         this.actualizarChart();
       }
+
     });
 
   }
@@ -125,6 +126,18 @@ export class BarChartComponent  implements OnInit {
     this.chart.data.datasets = Object.values(datasetsByCompany);
     
     this.chart.update(); 
+  }
+
+  private actualizarValoresChart(categoria: string, totalResults: number) {
+    const existingData = this.apiData.find(item => item.categoria === categoria);
+
+    if (existingData) {
+      
+      existingData.totalResults = totalResults;
+    } else {
+      
+      this.apiData.push({ categoria, totalResults });
+    }
   }
 
 }

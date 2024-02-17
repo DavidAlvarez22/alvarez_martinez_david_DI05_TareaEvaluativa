@@ -5,7 +5,8 @@ import { FormsModule } from '@angular/forms';
 import { HomePage } from './home.page';
 
 import { HomePageRoutingModule } from './home-routing.module';
-import { MiModuloModule } from '../modulos/mi-modulo.module';
+import { MiModuloModule } from '../componentes/mi-modulo.module';
+
 
 
 @NgModule({
