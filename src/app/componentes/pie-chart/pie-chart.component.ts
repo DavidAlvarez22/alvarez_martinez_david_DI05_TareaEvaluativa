@@ -1,3 +1,4 @@
+import { MiServicioService } from './../../servicios/mi-servicio.service';
 import { Component, ElementRef, Input, OnInit, Renderer2 } from '@angular/core';
 import { Chart,ChartType, elements } from 'chart.js/auto';
 
@@ -9,27 +10,51 @@ import { Chart,ChartType, elements } from 'chart.js/auto';
 export class PieChartComponent  implements OnInit {
 
   public chart !: Chart;
-  @Input() nameTab:string = "";
 
-  constructor(private el : ElementRef,private renderer: Renderer2) { }
+  //Creamos las variables que vamos a recibir desde home.html
+  @Input() nameTab:string = "";
+  @Input() backgroundColorCategorias: string[] = [];
+  @Input() borderColorCategorias: string[] = [];
+
+  //Arrays, donde vamos a meter los datos de las categorías y los resultados de cada una.
+  ArrayCategorias: string[] = [];
+  ArrayDatosCategorias: number[] = [];
+
+  public apiData: { categoria: string; totalResults: number }[] = [];
+
+  //En el constructor inyectamos nuestro servicio, elementRef y renderer para nuestro chart dinámico
+  constructor(private servicio : MiServicioService,private el : ElementRef,private renderer: Renderer2) { }
 
   ngOnInit() {
     this.inicializarChart();
-  }
 
-  private inicializarChart(){
+    //Nos sucribimos a nuestro observable
+    this.servicio.datos$.subscribe((datos) => {
+      if (datos != undefined) {
+       //BUscamos las categorías
+        let categorias = this.apiData.find(item => item.categoria === datos.categoria);
+        // Si no existe la categoria añadimos el objeto a la apiData
+        if (!categorias) {
+            this.apiData.push(datos);
+        }
+        // Con un bucle vamos llenando nuestros arrays con los datos
+        this.apiData.forEach((row: { categoria: string; totalResults: number }, index: number) => {
+          this.ArrayCategorias[index] = row.categoria;
+          this.ArrayDatosCategorias[index] = row.totalResults;
+         });
+        // Actualizamos el chart.
+        this.chart.update();
+      }
+    });
+  }
+  
+private inicializarChart(){
     const data = {
-      labels: ['Red','Green','Yellow','Grey','Blue'],
+      labels: this.ArrayCategorias,
       datasets: [{
         label: 'My First Dataset',
-        data: [11, 16, 7, 3, 14],
-        backgroundColor: [
-          'rgb(255, 99, 132)',
-          'rgb(75, 192, 192)',
-          'rgb(255, 205, 86)',
-          'rgb(201, 203, 207)',
-          'rgb(54, 162, 235)'
-        ]
+        data: this.ArrayDatosCategorias,
+        backgroundColor: this.backgroundColorCategorias
       }]
     };
 

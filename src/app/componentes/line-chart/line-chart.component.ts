@@ -1,3 +1,4 @@
+import { MiServicioService } from './../../servicios/mi-servicio.service';
 import { Component, ElementRef, Input, OnInit, Renderer2 } from '@angular/core';
 import { Chart, ChartType } from 'chart.js/auto';
 
@@ -9,21 +10,50 @@ import { Chart, ChartType } from 'chart.js/auto';
 export class LineChartComponent  implements OnInit {
 
   public chart!: Chart;
+
+  // Variable que podríamos recibir desde el html( En este caso no la enviamos)
   @Input() nameTab: string = "";
 
-  constructor(private el : ElementRef, private renderer : Renderer2) { }
+  //Arrays, donde vamos a meter los datos de las categorías y los resultados de cada una.
+  categorias: string[] = [];
+  datosCategorias: number[] = [];
+
+  //Variable apiData
+  public apiData: {categoria: string;totalResults: number} [] = [];
+
+  //En el constructor inyectamos nuestro servicio, elementRef y renderer para nuestro chart dinámico
+  constructor(private servicio: MiServicioService,private el : ElementRef, private renderer : Renderer2) { }
 
   ngOnInit() {
     console.log("Ejecuta line-chart")
     this.inicializarChart();
+    // Nos suscribimos al observable de tipo BehaviorSubject y cuando este emita un valor, recibiremos una notificación con el nuevo valor.
+    this.servicio.datos$.subscribe((datos) => {
+      if (datos != undefined) {
+        // Creamos una variable donde vemos si existe la categoria
+        let buscarCategoria = this.apiData.find(unDato => unDato.categoria === datos.categoria);
+        // Si no existe la categoria la añadimos a la apiData
+        if (!buscarCategoria) {
+            this.apiData.push(datos);
+        }
+        // cargamos categorías y datos
+        this.apiData.forEach((row: { categoria: string; totalResults: number }, index: number) => {
+          this.categorias[index] = row.categoria;
+          this.datosCategorias[index] = row.totalResults;
+         });
+        // Actualizamos el chart
+        this.chart.update();
+      }
+    });
+
   }
   private inicializarChart(){
     // datos
     const data = {
-      labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+      labels: this.categorias,
       datasets: [{
-        label: 'My First Dataset',
-        data: [65, 59, 80, 81, 56, 55, 40],
+        label: 'My Parameters Dataset',
+        data: this.datosCategorias,
         fill: false,
         borderColor: 'rgb(75, 192, 192)',
         tension: 0.1
@@ -36,11 +66,11 @@ export class LineChartComponent  implements OnInit {
     this.renderer.setStyle(div, 'height', '100%');
     this.renderer.setStyle(div, 'margin', 'auto');
     this.renderer.setStyle(div, 'text-align', 'center');
-    this.renderer.setAttribute(div, 'id', 'container'+this.nameTab+'BarChart');
+    this.renderer.setAttribute(div, 'id', 'container'+this.nameTab+'lineChart');
 
     // Creamos la gráfica
     const canvas = this.renderer.createElement('canvas');
-    this.renderer.setAttribute(canvas, 'id', this.nameTab+'BarChart');
+    this.renderer.setAttribute(canvas, 'id', this.nameTab+'lineChart');
 
     // Agregar el canvas al div
     this.renderer.appendChild(div, canvas);

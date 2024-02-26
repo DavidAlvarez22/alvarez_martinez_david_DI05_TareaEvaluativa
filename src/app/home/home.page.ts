@@ -10,7 +10,7 @@ export class HomePage {
   tipoChart : string[] = ['bar-chart','line-chart','pie-chart'];
   tipoDeChartSeleccionado: string = "bar-chart";
 
-  // Array para la cabecera de las noticias
+  // Array de categorias
   categorias: string[] = [
     "business",
     "entertainment",
@@ -21,6 +21,7 @@ export class HomePage {
     "sports"
   ];
 
+  //Array de colores
   backgroundColorCat: string[] = [
     'rgba(255, 99, 132, 0.2)',
     'rgba(255, 159, 64, 0.2)',
@@ -30,7 +31,7 @@ export class HomePage {
     'rgba(153, 102, 255, 0.2)',
     'rgba(201, 203, 207, 0.2)'
   ];
-
+  //Array colores de bordes
   borderColorCat: string[] =[
     'rgb(255, 99, 132)',
     'rgb(255, 159, 64)',
@@ -44,6 +45,7 @@ export class HomePage {
   constructor(public servicio: MiServicioService) {}
 
   ngOnInit() {
+    //Por cada categoría vamos llamando a nuestro servicio
     this.categorias.forEach(categoria => {
       this.servicio.cargarCategoria(categoria);
     });
@@ -54,7 +56,8 @@ export class HomePage {
     
     this.tipoDeChartSeleccionado = event.detail.value;
     
-    if (this.tipoDeChartSeleccionado == "bar-chart"){
+    //En función de la pestaña seleccionada enviamos llamada al servicio
+    if (this.tipoDeChartSeleccionado == "bar-chart" || this.tipoDeChartSeleccionado == "pie-chart" || this.tipoDeChartSeleccionado == "line-chart"){
       this.categorias.forEach(categoria => {
         this.servicio.cargarCategoria(categoria);
       });
