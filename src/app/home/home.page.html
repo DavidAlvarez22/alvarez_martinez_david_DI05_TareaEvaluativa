@@ -33,15 +33,20 @@
         <app-tablas [datosTabla]="datosTablaTab1"></app-tablas>
       </div>
 
-      <div class=" seccion header">
-        <h1>List</h1>
-      </div>
           <div class="seccion list-container">
+            <div class="header">
+              <h1>List</h1>
+            </div>
             <ul *ngFor="let lista of datosLista">
               <li>{{lista}}</li>
             </ul>
           </div>   
+          
+          <div class="seccion header">
+            <h1>Tablas</h1>
+          </div>
           <div class="table-container">
+           
             <app-tablas [datosTabla]="datosTablaTab1"></app-tablas>
           </div>
   </div>    

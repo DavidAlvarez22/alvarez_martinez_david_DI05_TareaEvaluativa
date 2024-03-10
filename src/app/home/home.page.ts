@@ -248,8 +248,9 @@ export class HomePage {
 
       //Gestionará el height de la página actual
       let headerHeight = 55; //Altura que tendrá el header
-      let footerHeight = 35; //Altura que tendrá el footer
+      let footerHeight = 31; //Altura que tendrá el footer
       let currentPageHeight = headerHeight; //Inicializamos con la altura de headerHeight
+      
 
     while (currentSectionIndex < totalSections) {
       const section = sections[currentSectionIndex];
@@ -261,14 +262,14 @@ export class HomePage {
          */
         const height = canvas.height * (width / canvas.width);
        
-        if (currentPageHeight + height >= doc.internal.pageSize.getHeight()) {
+        if (currentPageHeight + height +footerHeight >= doc.internal.pageSize.getHeight()) {
           doc.addPage();
           //currentPageHeight = 0;
           currentPageHeight = headerHeight;
         }
         
-        doc.addImage(imageData, 'JPG', 10, currentPageHeight, width-20, height);
-        currentPageHeight += height;
+        doc.addImage(imageData, 'JPG', 10, currentPageHeight +10, width-20, height);
+        currentPageHeight += height +10;
         contSections++;
         if (contSections === totalSections) {
           //Al final asignamos el header y footer a todas las páginas
