@@ -1,41 +1,50 @@
-<!--Con ion-header creamos nuestra cabecera, en la cual vamos a meter una toolbar  que contendrá nuestos distintos segmentos. Ëstos median
-ngfor iremos pasando al label-->
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-segment scrollable [value] = "tipoChart[0]" (ionChange)="cambiarChart($event)" >
-    <ion-segment-button *ngFor="let item of tipoChart" [value]= "item">
-      <ion-label>{{item}}</ion-label>
-    </ion-segment-button>
-  </ion-segment>
+    <ion-title>
+      Visualización de Datos
+    </ion-title>
+  <ion-button (click)="generarPDF()">Generar PDF</ion-button>
   </ion-toolbar>
 </ion-header>
 
-
 <ion-content [fullscreen]="true">
- <!--Utilizamos la etiqueta grid para organizar nuestra página y llamaremos a nuestros componentes mediante la etiqueta app a la que le pasaremos los atributos
-necesarios. Por otro lado , con ngif establece que se mostrará cuando se cumpla su condición-->
-  <ion-grid *ngIf="tipoDeChartSeleccionado == 'bar-chart'">
-    <ion-row>
-      <ion-col size="6">
-        <app-bar-chart [nombresCategorias]="categorias" [borderColorCategorias]="borderColorCat" [backgroundColorCategorias]="backgroundColorCat"></app-bar-chart>
-      </ion-col>
-      <ion-col size="6">
-        <ion-row>
-          <ion-col size="12">
-            <app-line-chart ></app-line-chart>
-          </ion-col>
-        </ion-row>
-        <ion-row>
-          <ion-col size="12">
-            <app-pie-chart [backgroundColorCategorias]="backgroundColorCat" [borderColorCategorias]="borderColorCat"></app-pie-chart>
-          </ion-col>
-        </ion-row>
-      </ion-col>
-    </ion-row>
-  </ion-grid>
+  <div #container>
+    <div class="dashboard-content">
+      <div class="seccion header">
+        <h1>Dashboard</h1>
+      </div>
+    <div class="seccion graficos">
+      <div class="chart">
+          <app-bar-chart [nombresCategorias]="categorias" [borderColorCategorias]="borderColorCat"
+              [backgroundColorCategorias]="backgroundColorCat"></app-bar-chart>
+      </div>
+      <div class="chart">
+          <app-line-chart></app-line-chart>
+      </div>
+      <div class="chart">
+          <app-pie-chart [backgroundColorCategorias]="backgroundColorCat" [borderColorCategorias]="borderColorCat">
+          </app-pie-chart>
+      </div>
+  </div>
+  <div class="seccion header">
+    <h1>Tablas</h1>
+  </div>
+      <div class="table-container">
+        <app-tablas [datosTabla]="datosTablaTab1"></app-tablas>
+      </div>
 
-  
-  <app-line-chart *ngIf="tipoDeChartSeleccionado == 'line-chart'"></app-line-chart>
-  
-  <app-pie-chart *ngIf="tipoDeChartSeleccionado == 'pie-chart'" [backgroundColorCategorias]="backgroundColorCat"[borderColorCategorias]="borderColorCat"></app-pie-chart>
+      <div class=" seccion header">
+        <h1>List</h1>
+      </div>
+          <div class="seccion list-container">
+            <ul *ngFor="let lista of datosLista">
+              <li>{{lista}}</li>
+            </ul>
+          </div>   
+          <div class="table-container">
+            <app-tablas [datosTabla]="datosTablaTab1"></app-tablas>
+          </div>
+  </div>    
+    </div>
+ 
 </ion-content>
