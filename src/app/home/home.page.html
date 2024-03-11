@@ -30,14 +30,25 @@
         <app-tablas [datosTabla]="datosTablaTab1"></app-tablas>
       </div>
 
-          <div class="seccion list-container">
+          <!--<div class="seccion list-container">
             <div class="header">
               <h1>List</h1>
             </div>
-            <ul *ngFor="let lista of datosLista">
+          -->
+          <div class=" seccion header">
+            <h1>List</h1>
+          </div>
+            <div class="seccion list-container" *ngFor="let chunkedData of datosLista | tablePipe:20">
+              <ul >
+                <li *ngFor="let item of chunkedData">{{ item }}</li>
+              </ul>
+            </div>
+            
+           <!-- <ul *ngFor="let lista of datosLista">
               <li>{{lista}}</li>
             </ul>
-          </div>   
+          -->
+          <!--</div>  --> 
           <div class="table-container">
             <app-tablas [datosTabla]="datosTablaTab1"></app-tablas>
           </div>
