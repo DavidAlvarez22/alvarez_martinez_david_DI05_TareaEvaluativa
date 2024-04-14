@@ -1,3 +1,4 @@
+<!-- Ponemos nuestro cabecera que tendrá un botón para generar el pdf-->
 <ion-header [translucent]="true">
   <ion-toolbar>
     <ion-title>
@@ -8,7 +9,9 @@
 </ion-header>
 
 <ion-content [fullscreen]="true">
+<!--Ponemos nuestro contenedor donde irá todqa nuestra imagen a imprimir-->
   <div #container>
+    <!--Dividimos en DIV todo lo que vamos a mostrar por pantalla-->
     <div class="dashboard-content">
       <div class="seccion header">
         <h1>Dashboard</h1>
@@ -25,16 +28,11 @@
           <app-pie-chart [backgroundColorCategorias]="backgroundColorCat" [borderColorCategorias]="borderColorCat">
           </app-pie-chart>
       </div>
-  </div>
+    </div>
         <div class="table-container">
         <app-tablas [datosTabla]="datosTablaTab1"></app-tablas>
       </div>
 
-          <!--<div class="seccion list-container">
-            <div class="header">
-              <h1>List</h1>
-            </div>
-          -->
           <div class=" seccion header">
             <h1>List</h1>
           </div>
@@ -43,12 +41,6 @@
                 <li *ngFor="let item of chunkedData">{{ item }}</li>
               </ul>
             </div>
-            
-           <!-- <ul *ngFor="let lista of datosLista">
-              <li>{{lista}}</li>
-            </ul>
-          -->
-          <!--</div>  --> 
           <div class="table-container">
             <app-tablas [datosTabla]="datosTablaTab1"></app-tablas>
           </div>

@@ -3,7 +3,7 @@
   </div>
 <div *ngFor="let row of datosTabla | tablePipe: 10" class="divTabla">
  
-  <!-- Aquí creamos una tabla por cada conjunto de 20 filas -->
+  <!-- Aquí creamos una tabla por cada conjunto de 10 filas -->
   <table #tablaContainer class="mi-tabla" [ngClass]="{'seccion': row.length <= 10}">
     <thead>
       <tr>

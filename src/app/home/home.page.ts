@@ -403,8 +403,6 @@ export class HomePage {
      let currentSectionIndex = 0;
      //Controlará que se hayan creado todas las imagenes antes de crear el PDF. En caso contrario imprimiría un pdf por cada sección.
      let contSections = 0;
-     //Definimos de que height queremos que empiece a dibujar nuestro PDF.
-     //let currentPageHeight = 0;
 
       //Gestionará el height de la página actual
       let headerHeight = 55; //Altura que tendrá el header
@@ -422,12 +420,21 @@ export class HomePage {
          */
         const height = canvas.height * (width / canvas.width);
        
+        //Esta condición se utiliza para verificar si agregar más contenido a la página actual del documento PDF superaría el límite de altura de la página. 
+        //Si se supera este límite, se agrega una nueva página al documento para continuar con el contenido.
         if (currentPageHeight + height +footerHeight >= doc.internal.pageSize.getHeight()) {
           doc.addPage();
-          //currentPageHeight = 0;
           currentPageHeight = headerHeight;
         }
-        
+/*
+      doc.addImage: Esta función se utiliza para agregar una imagen al documento PDF.
+      imagenData: Este es el objeto de la imagen que se va a agregar al documento. En nuestro caso lo que vamos a sacar por pantalla
+      "JPG": Este es el formato de la imagen que se está agregando. En este caso, la imagen se especifica como un archivo JPG.
+      10: Esta es la coordenada X de la posición de la imagen en el documento, es decir, su posición horizontal.
+      currentPageHeight: Esta es la coordenada Y de la posición de la imagen en el documento, es decir, su posición vertical.
+      width-20: Este es el ancho de la imagen que se agregará al documento. Dejamos 10 a cada lado
+      height: Este es el alto de la imagen que se agregará al documento.
+      */
         doc.addImage(imageData, 'JPG', 10, currentPageHeight, width-20, height);
         currentPageHeight += height;
         contSections++;
@@ -443,6 +450,7 @@ export class HomePage {
     } 
   }
 
+  //Añadimos el encabezado en todas las páginas
   encabezado(doc:jsPDF) {
     for (let i = 1; i <= doc.getNumberOfPages(); i++) {
       // Añadimos la págin
@@ -452,6 +460,15 @@ export class HomePage {
             
       // Añadimos un rectángulo gris como fondo del encabezado
       doc.setFillColor('#CCCCCC'); // Color gris
+
+      /*
+      doc.rect: Esta función se utiliza para dibujar un rectángulo en el documento PDF.
+      10: Es la coordenada X del punto de inicio del rectángulo, es decir, su posición horizontal en la página.
+      0: Es la coordenada Y del punto de inicio del rectángulo, es decir, su posición vertical en la página. 
+      pageWidth-20: Es el ancho del rectángulo. Restamos 20 para dejar margen de 10 a cada lado del rectángulo
+      55: Es la altura del rectángulo. 
+      'F': Este parámetro indica el estilo de relleno del rectángulo. En este caso, 'F' significa que el rectángulo se llenará con un color sólido. Si fuera 'S', el rectángulo solo tendría un borde sin relleno.
+      */
       doc.rect(10, 0, pageWidth-20, 55, 'F'); // Tamaño y posición del rectángulo
 
 
@@ -464,6 +481,15 @@ export class HomePage {
       const imgX = (pageWidth - imgWidth) / 2;
       const imgY = 5; // Posición Y de la imagen
 
+      /*
+      doc.addImage: Esta función se utiliza para agregar una imagen al documento PDF.
+      imagen: Este es el objeto de la imagen que se va a agregar al documento. Probablemente sea una variable que contiene la imagen en sí misma.
+      "JPG": Este es el formato de la imagen que se está agregando. En este caso, la imagen se especifica como un archivo JPG.
+      imgX: Esta es la coordenada X de la posición de la imagen en el documento, es decir, su posición horizontal.
+      imgY: Esta es la coordenada Y de la posición de la imagen en el documento, es decir, su posición vertical.
+      imgWidth: Este es el ancho de la imagen que se agregará al documento.
+      imgHeight: Este es el alto de la imagen que se agregará al documento.
+      */
       doc.addImage(imagen, "JPG", imgX, imgY, imgWidth, imgHeight);
       // Le asignamos un tamaño a las letras
       doc.setFontSize(10);
@@ -473,13 +499,22 @@ export class HomePage {
       const telefono = "Teléfono: 123-456-789";
       const direccion = "Dirección: Calle Principal, 123";
       const texto = nombreEmpresa+'\n'+telefono+'\n'+direccion;
+      
+      /*
+      doc.text: Esta función se utiliza para agregar texto al documento PDF.
+      texto: Es el texto que se va a agregar.
+      20: Esto especifica la posición horizontal del texto en el documento. Es decir la posición X. En este caso la mitad
+      10 Esto especifica la posición vertical del texto en el documento. Es decir, la posición Y
+      {baseline:'bottom'}: Este es un objeto de configuración opcional que establece la alineación vertical del texto en relación con su posición Y. 
+      */
       doc.text(texto,20, 10, {baseline:'bottom'});
       
     }
   }
+  //Añadimos el footer a todas las páginas creadas
   footer(doc:jsPDF){
     for (let i = 1; i <= doc.getNumberOfPages(); i++) {
-      // Añadimos la págin
+      // Añadimos la página
       doc.setPage(i);
 
       const pageWidth = doc.internal.pageSize.width;
@@ -487,11 +522,28 @@ export class HomePage {
       const rectHeight = 20; // Altura del rectángulo
       const rectY = pageHeight - rectHeight-10; // Coordenada Y del rectángulo
       doc.setFillColor('#CCCCCC'); // Color gris
+      /*
+      doc.rect: Esta función se utiliza para dibujar un rectángulo en el documento PDF.
+      10: Es la coordenada X del punto de inicio del rectángulo, es decir, su posición horizontal en la página.
+      rectY: Es la coordenada Y del punto de inicio del rectángulo, es decir, su posición vertical en la página. 
+      pageWidth-20: Es el ancho del rectángulo. Restamos 20 para dejar margen de 10 a cada lado del rectángulo
+      rectHeight: Es la altura del rectángulo. 
+      'F': Este parámetro indica el estilo de relleno del rectángulo. En este caso, 'F' significa que el rectángulo se llenará con un color sólido. Si fuera 'S', el rectángulo solo tendría un borde sin relleno.
+      */
       doc.rect(10, rectY, pageWidth-20, rectHeight, 'F'); // Tamaño y posición del rectángulo
 
+      //Numeración páginas
       const totalPages = doc.getNumberOfPages();
       const footerText = `Página ${i} de ${totalPages}`;
-    doc.text(footerText, doc.internal.pageSize.width /2, doc.internal.pageSize.height - 15, {baseline:'bottom'});
+      //Ponemos la numeración de las páginas en el centro del rectángulo.
+      /*
+      doc.text: Esta función se utiliza para agregar texto al documento PDF.
+      footerText: Es el texto que se va a agregar.
+      doc.internal.pageSize.width / 2: Esto especifica la posición horizontal del texto en el documento. Es decir la posición X. En este caso la mitad
+      doc.internal.pageSize.height - 15: Esto especifica la posición vertical del texto en el documento. Está estableciendo la altura de la página menos 15 unidades como la posición Y
+      {baseline:'bottom'}: Este es un objeto de configuración opcional que establece la alineación vertical del texto en relación con su posición Y. 
+      */
+      doc.text(footerText, doc.internal.pageSize.width /2, doc.internal.pageSize.height - 15, {baseline:'bottom'});
   }
 }
 
